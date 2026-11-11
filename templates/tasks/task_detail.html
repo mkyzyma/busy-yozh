@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ task.title }} — Task Manager{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <a class="back-link" href="{% url 'tasks:task-list' %}">Все задачи</a>
+        <h1>{{ task.title }}</h1>
+    </div>
+    <div class="status-actions">
+        <span class="status-badge{% if task.is_completed %} is-completed{% endif %}">{% if task.is_completed %}Выполнена{% else %}В работе{% endif %}</span>
+        {% if can_change_completion %}
+        <form method="post" action="{% url 'tasks:task-completion' task.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="is_completed" value="{{ task.is_completed|yesno:'false,true' }}">
+            <button class="button button-secondary" type="submit">{% if task.is_completed %}Вернуть в работу{% else %}Отметить выполненной{% endif %}</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="detail-layout">
+    <section class="detail-panel">
+        <h2>Описание</h2>
+        <div class="task-description">{{ task.description|linebreaks }}</div>
+        <dl class="task-properties">
+            <div><dt>Автор</dt><dd>{{ task.author.username }}</dd></div>
+            <div><dt>Исполнитель</dt><dd>{% if task.assignee %}{{ task.assignee.username }}{% else %}Не назначен{% endif %}</dd></div>
+            <div><dt>Создана</dt><dd>{{ task.created_at|date:'d.m.Y H:i' }}</dd></div>
+            <div><dt>Обновлена</dt><dd>{{ task.updated_at|date:'d.m.Y H:i' }}</dd></div>
+        </dl>
+        {% if can_edit %}
+        <div class="action-row">
+            <a class="button" href="{% url 'tasks:task-update' task.pk %}">Редактировать</a>
+            <a class="button button-danger" href="{% url 'tasks:task-delete' task.pk %}">Удалить</a>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="comments-panel">
+        <h2>Комментарии</h2>
+        <div class="comment-list">
+            {% for comment in comments %}
+                <article class="comment">
+                    <strong>{{ comment.author.username }}</strong>
+                    <time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:'d.m.Y H:i' }}</time>
+                    <p>{{ comment.text|linebreaksbr }}</p>
+                </article>
+            {% empty %}
+                <p class="muted">Комментариев пока нет.</p>
+            {% endfor %}
+        </div>
+        <form method="post" action="{% url 'tasks:comment-create' task.pk %}" class="stacked-form comment-form">
+            {% csrf_token %}
+            {{ comment_form.non_field_errors }}
+            {{ comment_form.as_p }}
+            <button class="button" type="submit">Добавить комментарий</button>
+        </form>
+    </section>
+</div>
+{% endblock %}

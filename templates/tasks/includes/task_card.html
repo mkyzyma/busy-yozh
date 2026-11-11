@@ -1,0 +1,10 @@
+<article class="task-row{% if task.is_completed %} is-completed{% endif %}">
+    <div class="task-main">
+        <a class="task-title" href="{% url 'tasks:task-detail' task.pk %}">{{ task.title }}</a>
+        <div class="task-meta">
+            <span>Автор: {{ task.author.username }}</span>
+            <span>Исполнитель: {% if task.assignee %}{{ task.assignee.username }}{% else %}не назначен{% endif %}</span>
+        </div>
+    </div>
+    <span class="status-badge">{% if task.is_completed %}Выполнена{% else %}В работе{% endif %}</span>
+</article>

@@ -1,0 +1,77 @@
+[tool.poetry]
+name = "task-manager"
+version = "0.1.0"
+description = "Django task manager with HTML and REST API"
+authors = ["Mikhail Kyzyma <mv.kyzyma@yandex.ru>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.2.0"
+djangorestframework = "^3.16.0"
+djangorestframework-simplejwt = "^5.5.0"
+drf-spectacular = "^0.28.0"
+drf-spectacular-sidecar = ">=2025.1.1,<2027.0.0"
+psycopg = {version = "^3.2.0", extras = ["binary"]}
+django-environ = "^0.12.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+pytest-django = "^4.10.0"
+pytest-cov = "^6.1.0"
+factory-boy = "^3.3.0"
+ruff = "^0.12.0"
+mypy = "^1.15.0"
+django-stubs = "^5.2.0"
+djangorestframework-stubs = "^3.16.0"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+extend-exclude = ["*/migrations/*.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["mypy_django_plugin.main"]
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "environ"
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["apps"]
+omit = ["*/migrations/*"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 85
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

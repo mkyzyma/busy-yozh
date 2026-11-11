@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление задачи — Task Manager{% endblock %}
+
+{% block content %}
+<section class="form-panel danger-panel">
+    <h1>Подтвердите удаление</h1>
+    <p>Задача «{{ task.title }}» и все её комментарии будут удалены без возможности восстановления.</p>
+    <form method="post" class="action-row">
+        {% csrf_token %}
+        <button class="button button-danger" type="submit">Удалить задачу</button>
+        <a class="button button-secondary" href="{% url 'tasks:task-detail' task.pk %}">Отмена</a>
+    </form>
+</section>
+{% endblock %}

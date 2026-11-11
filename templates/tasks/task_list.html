@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Задачи — Task Manager{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h1>Задачи</h1>
+        <p class="muted">Работа, назначенная вам и вашей команде.</p>
+    </div>
+    <a class="button" href="{% url 'tasks:task-create' %}">Новая задача</a>
+</div>
+
+<form method="get" class="filters" aria-label="Фильтры задач">
+    <label>Область
+        <select name="scope">
+            <option value="all" {% if scope == 'all' %}selected{% endif %}>Все задачи</option>
+            <option value="mine" {% if scope == 'mine' %}selected{% endif %}>Созданные мной</option>
+            <option value="assigned" {% if scope == 'assigned' %}selected{% endif %}>Назначенные мне</option>
+        </select>
+    </label>
+    <label>Статус
+        <select name="status">
+            <option value="all" {% if status == 'all' %}selected{% endif %}>Любой</option>
+            <option value="active" {% if status == 'active' %}selected{% endif %}>В работе</option>
+            <option value="completed" {% if status == 'completed' %}selected{% endif %}>Выполненные</option>
+        </select>
+    </label>
+    <button class="button button-secondary" type="submit">Показать</button>
+</form>
+
+<div class="task-list">
+    {% for task in tasks %}
+        {% include 'tasks/includes/task_card.html' with task=task %}
+    {% empty %}
+        <section class="empty-state">
+            <h2>Здесь пока нет задач</h2>
+            <p>Измените фильтры или создайте первую задачу.</p>
+            <a class="button" href="{% url 'tasks:task-create' %}">Создать задачу</a>
+        </section>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav class="pagination" aria-label="Страницы задач">
+    {% if page_obj.has_previous %}
+        <a class="button button-secondary" href="?page={{ page_obj.previous_page_number }}&scope={{ scope }}&status={{ status }}">Назад</a>
+    {% endif %}
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a class="button button-secondary" href="?page={{ page_obj.next_page_number }}&scope={{ scope }}&status={{ status }}">Далее</a>
+    {% endif %}
+</nav>
+{% endif %}
+{% endblock %}

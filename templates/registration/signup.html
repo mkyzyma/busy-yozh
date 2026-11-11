@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация — Task Manager{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+    <h1>Регистрация</h1>
+    <p class="muted">Создайте аккаунт для работы с задачами.</p>
+    <form method="post" class="stacked-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.as_p }}
+        <button class="button" type="submit">Создать аккаунт</button>
+    </form>
+    <p>Уже есть аккаунт? <a href="{% url 'accounts:login' %}">Войти</a>.</p>
+</section>
+{% endblock %}

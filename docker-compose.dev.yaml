@@ -1,0 +1,6 @@
+services:
+  web:
+    environment:
+      DJANGO_RUN_MIGRATIONS: "1"
+    volumes:
+      - .:/app

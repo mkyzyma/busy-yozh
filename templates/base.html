@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Task Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+<header class="site-header">
+    <nav class="nav container" aria-label="Основная навигация">
+        <a class="brand" href="{% url 'tasks:task-list' %}">Task Manager</a>
+        <div class="nav-actions">
+            {% if user.is_authenticated %}
+                <span class="username">{{ user.username }}</span>
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button class="button button-secondary" type="submit">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Войти</a>
+                <a class="button" href="{% url 'accounts:signup' %}">Регистрация</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>
+<main class="container main-content">
+    {% if messages %}
+        <div class="messages" role="status">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

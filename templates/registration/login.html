@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход — Task Manager{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+    <h1>Вход</h1>
+    <p class="muted">Войдите, чтобы управлять задачами и комментариями.</p>
+    <form method="post" class="stacked-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.as_p }}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+        <button class="button" type="submit">Войти</button>
+    </form>
+    <p>Нет аккаунта? <a href="{% url 'accounts:signup' %}">Зарегистрируйтесь</a>.</p>
+</section>
+{% endblock %}
